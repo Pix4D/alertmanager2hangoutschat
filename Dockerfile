@@ -1,4 +1,5 @@
-FROM alpine:3.7
+FROM ubuntu:latest
 COPY alertmanager2hangoutschat /
-RUN apk add --no-cache ca-certificates
+RUN apt-get update
+RUN apt-get install -y ca-certificates
 ENTRYPOINT ["/alertmanager2hangoutschat"]
