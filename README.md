@@ -11,11 +11,17 @@ Example alertmanager webhook config:
 
 The endpoints takes the google webhook api as urlencoded GET parameter named "url". 
 
-
 ### build binary
 
 ```
-go get -u github.com/fortnoxab/alertmanager2hangoutschat
+go mod download
+CGO_ENABLED=0 go build
+```
+
+### build Docker image
+
+```
+docker build . -t alertmanager2hangoutschat
 ```
 
 ### Usage
