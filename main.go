@@ -146,6 +146,11 @@ func sendAlert(data alerttemplate.Alert, getParams url.Values) error {
 		return err
 	}
 
+	mention, err := url.Parse(getParams.Get("mention"))
+	if err != nil {
+		return err
+	}
+
 	alert := &alertData{
 		Alert:       data,
 		QueryParams: getParams,
@@ -153,6 +158,10 @@ func sendAlert(data alerttemplate.Alert, getParams url.Values) error {
 	tmpl, err := generateTemplate(*templateString, alert)
 	if err != nil {
 		return err
+	}
+
+	if mention.String() == "true" {
+		tmpl = "<users/all>\n" + tmpl
 	}
 
 	textReq := &textRequest{
