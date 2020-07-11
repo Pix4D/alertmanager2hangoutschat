@@ -30,12 +30,14 @@ var logFormat = flag.String("log-format", "json", "can be empty string or json")
 var logLevel = flag.String("log-level", "info", "Can be one of:"+strings.Join(validLogLevels(), ","))
 var templateString = flag.String("template-string", messageTemplate, "template for the messages sent to hangouts chat")
 
-var messageTemplate = `<users/all>
-*{{.QueryParams.Get "env" | toUpper }}: {{ .Labels.alertname }} - {{.Status | toUpper}}*
-{{ range .Annotations.SortedPairs -}}
-{{ .Name }}: {{ .Value}}
+var messageTemplate = `*{{ .Labels.alertname }} - {{.Status | toUpper}}*
+{{ range .Labels.SortedPairs -}}
+*{{ .Name }}*: {{ .Value}}
 {{ end -}}
-Source: <{{ .GeneratorURL }}|Show in prometheus>
+{{ range .Annotations.SortedPairs -}}
+*{{ .Name }}*: {{ .Value}}
+{{ end -}}
+Source: <{{ .GeneratorURL }}|Show in Prometheus>
 `
 
 func main() {
