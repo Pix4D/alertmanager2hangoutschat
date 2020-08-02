@@ -30,7 +30,8 @@ var logFormat = flag.String("log-format", "json", "can be empty string or json")
 var logLevel = flag.String("log-level", "info", "Can be one of:"+strings.Join(validLogLevels(), ","))
 var templateString = flag.String("template-string", messageTemplate, "template for the messages sent to hangouts chat")
 
-var messageTemplate = `*{{ .Labels.alertname }} - {{.Status | toUpper}}*
+var messageTemplate = `<users/all>
+*{{ .Labels.alertname }} - {{.Status | toUpper}}*
 {{ range .Labels.SortedPairs -}}
 *{{ .Name }}*: {{ .Value}}
 {{ end -}}
@@ -160,8 +161,8 @@ func sendAlert(data alerttemplate.Alert, getParams url.Values) error {
 		return err
 	}
 
-	if mention.String() == "true" {
-		tmpl = "<users/all>\n" + tmpl
+	if mentionAll.String() == "false" {
+		tmpl = strings.Replace(tmpl, "<users/all>\n", "", 1)
 	}
 
 	textReq := &textRequest{
