@@ -10,10 +10,10 @@ Example alertmanager webhook config:
 ```
 The endpoints takes the google webhook api as urlencoded GET parameter named "url". 
 
-If you need mention all folks in the room, add `mention=true` in URL parameter:
+If you don't want to mention all folks in the room, add `mention=false` in URL parameter:
 ```
   webhook_configs:
-  - url: http://alertmanager2hangoutschat.domain.com/alertmanager?mention=true&url=https%3A%2F%2Fchat.googleapis.com%2Fv1%2Fspaces%2Fasdfasdf%2Fmessages%3Fkey%3DKEY%26token%3DTOKEN
+  - url: http://alertmanager2hangoutschat.domain.com/alertmanager?mention=false&url=https%3A%2F%2Fchat.googleapis.com%2Fv1%2Fspaces%2Fasdfasdf%2Fmessages%3Fkey%3DKEY%26token%3DTOKEN
 ```
 
 
