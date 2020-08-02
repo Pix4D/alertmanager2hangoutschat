@@ -146,7 +146,7 @@ func sendAlert(data alerttemplate.Alert, getParams url.Values) error {
 		return err
 	}
 
-	mention, err := url.Parse(getParams.Get("mention"))
+	mentionAll, err := url.Parse(getParams.Get("mention"))
 	if err != nil {
 		return err
 	}
