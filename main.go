@@ -31,11 +31,14 @@ var logLevel = flag.String("log-level", "info", "Can be one of:"+strings.Join(va
 var templateString = flag.String("template-string", messageTemplate, "template for the messages sent to hangouts chat")
 
 var messageTemplate = `<users/all>
-*{{.QueryParams.Get "env" | toUpper }}: {{ .Labels.alertname }} - {{.Status | toUpper}}*
-{{ range .Annotations.SortedPairs -}}
-{{ .Name }}: {{ .Value}}
+*{{ .Labels.alertname }} - {{.Status | toUpper}}*
+{{ range .Labels.SortedPairs -}}
+*{{ .Name }}*: {{ .Value}}
 {{ end -}}
-Source: <{{ .GeneratorURL }}|Show in prometheus>
+{{ range .Annotations.SortedPairs -}}
+*{{ .Name }}*: {{ .Value}}
+{{ end -}}
+Source: <{{ .GeneratorURL }}|Show in Prometheus>
 `
 
 func main() {
@@ -144,6 +147,11 @@ func sendAlert(data alerttemplate.Alert, getParams url.Values) error {
 		return err
 	}
 
+	mentionAll, err := url.Parse(getParams.Get("mention"))
+	if err != nil {
+		return err
+	}
+
 	alert := &alertData{
 		Alert:       data,
 		QueryParams: getParams,
@@ -151,6 +159,10 @@ func sendAlert(data alerttemplate.Alert, getParams url.Values) error {
 	tmpl, err := generateTemplate(*templateString, alert)
 	if err != nil {
 		return err
+	}
+
+	if mentionAll.String() == "false" {
+		tmpl = strings.Replace(tmpl, "<users/all>\n", "", 1)
 	}
 
 	textReq := &textRequest{
